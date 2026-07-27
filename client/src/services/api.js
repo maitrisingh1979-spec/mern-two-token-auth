@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// Dynamically select backend URL based on environment
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 // Base Axios instance
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${API_BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -93,9 +96,9 @@ api.interceptors.response.use(
 
       try {
         console.log('[Axios Interceptor] 🔄 Access Token expired or invalid. Requesting new token via /api/refresh...');
-        
-        // Execute refresh token request
-        const response = await axios.post('/api/refresh', {
+
+        // Execute refresh token request using full base URL to prevent relative routing bugs
+        const response = await axios.post(`${API_BASE_URL}/api/refresh`, {
           refreshToken: storedRefreshToken,
         });
 
@@ -116,7 +119,7 @@ api.interceptors.response.use(
         processQueue(null, newAccessToken);
 
         console.log('[Axios Interceptor] ✅ Token refresh successful. Seamlessly retrying original failed request.');
-        
+
         // Retry initial failed request seamlessly
         return api(originalRequest);
       } catch (refreshError) {

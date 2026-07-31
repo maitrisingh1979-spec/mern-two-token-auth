@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Dynamically select backend URL based on environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// Dynamically select backend URL based on environment (handles both VITE_API_URL and VITE_API_BASE_URL)
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 // Base Axios instance
 const api = axios.create({
